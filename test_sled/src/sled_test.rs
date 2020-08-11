@@ -1,5 +1,5 @@
-use blake2::{Blake2b, Blake2s, Digest};
 use blake2::digest::Input;
+use blake2::{Blake2b, Blake2s, Digest};
 use sled::Batch;
 use std::str;
 use std::time::Instant;
@@ -107,32 +107,30 @@ pub fn test3(count: i32) -> Result<(), failure::Error> {
     Ok(())
 }
 
+use std::fs::File;
+use std::io::Write;
 use tempfile::tempdir;
-    use std::fs::File;
-    use std::io::{ Write};
-    
 
 pub fn test(count: u32) -> Result<(), failure::Error> {
-    
     // Create a directory inside of `std::env::temp_dir()`.
     let dir = tempdir()?;
-    let s= dir.path().to_str().expect("get folder path");
+    let s = dir.path().to_str().expect("get folder path");
     println!("dir={}", s);
-    
+
     let file_path = dir.path().join("my-temporary-note.txt");
     let mut file = File::create(&file_path)?;
     writeln!(file, "Brian was here. Briefly.")?;
     drop(file);
     println!("{:?}", file_path);
-    let m=std::fs::read_to_string(file_path)?;
+    let m = std::fs::read_to_string(file_path)?;
     println!("{}", m);
-    
+
     // By closing the `TempDir` explicitly, we can check that it has
     // been deleted successfully. If we don't close it explicitly,
     // the directory will still be deleted when `dir` goes out
     // of scope, but we won't know whether deleting the directory
     // succeeded.
-    
+
     dir.close()?;
     Ok(())
 }

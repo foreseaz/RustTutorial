@@ -1,4 +1,5 @@
 mod rocks;
+mod simple;
 mod sled_test;
 mod test;
 
@@ -15,5 +16,6 @@ fn test_performance() {
     rocks::write_db_batch(count).unwrap();
 }
 fn main() {
-    sled_test::test(100);
+    // sled_test::test(100);
+    simple::simple_test();
 }
