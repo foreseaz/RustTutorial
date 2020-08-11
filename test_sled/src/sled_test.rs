@@ -1,4 +1,5 @@
 use blake2::{Blake2b, Blake2s, Digest};
+use blake2::digest::Input;
 use sled::Batch;
 use std::str;
 use std::time::Instant;
@@ -9,11 +10,11 @@ pub fn write_db(count: i32) -> Result<(), failure::Error> {
     let start = Instant::now();
     for i in 0..count {
         let mut hasher = Blake2s::new();
-        hasher.input(format!("{}", i));
+        hasher.input(format!("{}", i).as_bytes());
         let res = hasher.result();
 
         let mut hasher_value = Blake2s::new();
-        hasher_value.input(format!("data {}", i));
+        hasher_value.input(format!("data {}", i).as_bytes());
         let res_value = hasher_value.result();
         // println!("{} {}", hex::encode(res), hex::encode(res_value));
         tree.insert(res.as_slice(), res_value.as_slice());
@@ -32,11 +33,11 @@ pub fn write_db_batch(count: i32) -> Result<(), failure::Error> {
     let mut batch = Batch::default();
     for i in 0..count {
         let mut hasher = Blake2s::new();
-        hasher.input(format!("{}", i));
+        hasher.input(format!("{}", i).as_bytes());
         let res = hasher.result();
 
         let mut hasher_value = Blake2s::new();
-        hasher_value.input(format!("data {}", i));
+        hasher_value.input(format!("data {}", i).as_bytes());
         let res_value = hasher_value.result();
         //   println!("{} {}", hex::encode(res), hex::encode(res_value));
         batch.insert(res.as_slice(), res_value.as_slice());
@@ -58,7 +59,7 @@ pub fn test2(count: i32) -> Result<(), failure::Error> {
         let mut key2: [u8; 8] = [0; 8];
         key2.copy_from_slice(&u64::to_be_bytes(key));
         let mut hasher_value = Blake2s::new();
-        hasher_value.input(format!("data {}", i));
+        hasher_value.input(format!("data {}", i).as_bytes());
         let res_value = hasher_value.result();
         // println!("{} {}", hex::encode(res), hex::encode(res_value));
         tree.insert(&key2, res_value.as_slice());
@@ -86,7 +87,7 @@ pub fn test3(count: i32) -> Result<(), failure::Error> {
         //let key = i as u64;
         let key2 = hex::encode(&u64::to_be_bytes(i as u64));
         let mut hasher_value = Blake2s::new();
-        hasher_value.input(format!("data {}", i));
+        hasher_value.input(format!("data {}", i).as_bytes());
         let res_value = hasher_value.result();
         // println!("{} {}", hex::encode(res), hex::encode(res_value));
         tree.insert(&key2, &format!("data={}", i)[..]);
