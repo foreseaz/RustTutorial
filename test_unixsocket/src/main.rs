@@ -1,7 +1,7 @@
 mod bind;
-
+mod pair;
 fn main()
 {
-    bind::main();
+    pair::main();
 
 }
